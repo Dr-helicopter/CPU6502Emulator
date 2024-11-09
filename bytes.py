@@ -1,4 +1,4 @@
-from typing import Final
+from argparse import ArgumentTypeError
 
 
 
@@ -39,7 +39,8 @@ _hex_to_tuple = {make_hex_from_tuple(i) : i for i in valid_bytes}
 _tuple_to_hex = {_hex_to_tuple[a] : a for a in _hex_to_tuple}
 _int_to_tuple = {make_int_from_tuple(i) : i for i in valid_bytes}
 _tuple_to_int = {_int_to_tuple[a] : a for a in _int_to_tuple}
-
+_int_to_hex = {i : _tuple_to_hex[_int_to_tuple[i]] for i in _int_to_tuple}
+_hex_to_int = {_int_to_hex[i] : i for i in _int_to_hex}
 
 
 class Byte:
@@ -49,17 +50,20 @@ class Byte:
             value = value.lower()
             if len(value) == 1: value = '0' + value
             if value in _hex_to_tuple:
-                self._value : Final[ByteTuple] = (_hex_to_tuple[value])
+                self._value : int = _hex_to_int[value]
         elif type(value) is int:
             value %= self.max_val
             self._value = _hex_to_tuple[str(hex(value))[2:]]
 
     # basics
     def __getitem__(self, item) -> int:
-        return self._value[-item + 1]
+        if type(item) != int: raise ArgumentTypeError("byte can only take int types")
+        if not (0 <= item < 8): raise ValueError("byte can only take integers between 0 and 7")
+        return _int_to_tuple[self._value][-item]
     def __str__(self) -> str:
         a = ''
-        for i in self._value: a = str(i) + a
+        for i in _int_to_tuple[self._value]: a = str(i) + a
         return a
     def __hex__(self) -> str:
-        return _tuple_to_hex[self._value]
+        return _int_to_hex[self._value]
+
