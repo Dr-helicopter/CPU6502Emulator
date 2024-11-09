@@ -24,7 +24,8 @@ def make_hex_from_tuple(t : ByteTuple):
     for b in t:
         a += b * i
         i *= 2
-    return str(hex(a))[2:]
+    r =  str(hex(a))[2:]
+    return r if len(r) == 2 else '0' + r
 
 def make_int_from_tuple(t : ByteTuple) -> int:
     i , n = 1 , 0
@@ -46,7 +47,7 @@ class Byte:
     def __init__(self, value):
         if type(value) is str:
             value = value.lower()
-            if len(value) == 1: value += '0'
+            if len(value) == 1: value = '0' + value
             if value in _hex_to_tuple:
                 self._value : Final[ByteTuple] = (_hex_to_tuple[value])
         elif type(value) is int:
