@@ -4,7 +4,6 @@ from typing import Final
 
 
 ByteTuple = tuple[int, int, int, int, int, int, int, int]
-max_byte_val = 256
 
 def _make_all_bytes(depth: int) -> list:
     if depth > 0:
@@ -27,12 +26,23 @@ def make_hex_from_tuple(t : ByteTuple):
         i *= 2
     return str(hex(a))[2:]
 
-_hex_to_tuple = {make_hex_from_tuple(i) : i  for i in valid_bytes}
+def make_int_from_tuple(t : ByteTuple) -> int:
+    i , n = 1 , 0
+    for b in t:
+        n += i * b
+        i *= 2
+    return n
+
+
+_hex_to_tuple = {make_hex_from_tuple(i) : i for i in valid_bytes}
 _tuple_to_hex = {_hex_to_tuple[a] : a for a in _hex_to_tuple}
+_int_to_tuple = {make_int_from_tuple(i) : i for i in valid_bytes}
+_tuple_to_int = {_int_to_tuple[a] : a for a in _int_to_tuple}
 
 
 
 class Byte:
+    max_val = 256
     def __init__(self, value):
         if type(value) is str:
             value = value.lower()
@@ -40,7 +50,7 @@ class Byte:
             if value in _hex_to_tuple:
                 self._value : Final[ByteTuple] = (_hex_to_tuple[value])
         elif type(value) is int:
-            value %= max_byte_val
+            value %= self.max_val
             self._value = _hex_to_tuple[str(hex(value))[2:]]
 
     # basics
