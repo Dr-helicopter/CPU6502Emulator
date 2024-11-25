@@ -46,24 +46,59 @@ _hex_to_int = {_int_to_hex[i] : i for i in _int_to_hex}
 class Byte:
     max_val = 256
     def __init__(self, value):
+        self._value: int
         if type(value) is str:
             value = value.lower()
             if len(value) == 1: value = '0' + value
             if value in _hex_to_tuple:
-                self._value : int = _hex_to_int[value]
+                self._value = _hex_to_int[value]
         elif type(value) is int:
             value %= self.max_val
-            self._value = _hex_to_tuple[str(hex(value))[2:]]
+            self._value = value
 
-    # basics
-    def __getitem__(self, item) -> int:
-        if type(item) != int: raise ArgumentTypeError("byte can only take int types")
-        if not (0 <= item < 8): raise ValueError("byte can only take integers between 0 and 7")
-        return _int_to_tuple[self._value][-item]
+
+    #assignment --- start ---
+    def __iadd__(self, other): return self + other
+    def __isub__(self, other): return self - other
+    #assignment --- end ---
+
+    # booleans ---start---
+    def __lt__(self, other) -> bool: return self._value < other
+    def __gt__(self, other) -> bool: return self._value > other
+    def __le__(self, other) -> bool: return self._value <= other
+    def __ge__(self, other) -> bool: return self._value >= other
+    # booleans ---end---
+
+    # castings ---start---
+    def __int__(self): return self._value
     def __str__(self) -> str:
         a = ''
         for i in _int_to_tuple[self._value]: a = str(i) + a
         return a
     def __hex__(self) -> str:
         return _int_to_hex[self._value]
+    # casting ---end---
+
+
+
+
+    # arithmetic operators --- start ---
+    def __add__(self, other):
+        if not isinstance(other, Byte): other = Byte(other)
+        return Byte(self._value + other._value)
+    def __radd__(self, other):
+        if not isinstance(other, Byte): other = Byte(other)
+        return Byte(self._value + other._value)
+    def __sub__(self, other):
+        if not isinstance(other, Byte): other = Byte(other)
+        return Byte(self._value - other._value)
+    def __rsub__(self, other):
+        if not isinstance(other, Byte): other = Byte(other)
+        return Byte(self._value - other._value)
+    # arithmetic operators --- end ---
+
+    def __getitem__(self, item) -> int:
+        if type(item) != int: raise ArgumentTypeError("byte can only take int types")
+        if not (0 <= item < 8): raise ValueError("byte can only take integers between 0 and 7")
+        return _int_to_tuple[self._value][-item]
 

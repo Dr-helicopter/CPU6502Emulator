@@ -1,7 +1,20 @@
-from registers import Register
 from bytes import Byte
+from registers import Register
+from mem import Mem
 
 class CPU6519:
+	class Cycle:
+		def __init__(self, value : int): self.value = value
+		def inc(self): self.value += 1
+		def dec(self): self.value -= 1
+		def __eq__(self, other): return self.value == other
+		def __lt__(self, other): return self.value < other
+		def __gt__(self, other): return self.value > other
+		def __le__(self, other): return self.value <= other
+		def __ge__(self, other): return self.value >= other
+		def __repr__(self): return str(self.value)
+
+
 	def __init__(self):
 		self.PC : Register = Register('fffc')
 		self.SP : Register = Register('0100')
@@ -20,7 +33,7 @@ class CPU6519:
 		self.N : bool = False
 
 
-	def start(self):
+	def reset(self):
 		self.PC = Register('fffc')
 		self.SP = Register('0100')
 
@@ -35,3 +48,32 @@ class CPU6519:
 		self.B = False
 		self.V = False
 		self.N = False
+
+
+
+	def fetch_byte(self, mem: Mem, cycle : Cycle) -> Byte:
+		data : Byte = mem[self.PC]
+		self.PC += 1
+		cycle.dec()
+		return data
+
+
+
+
+	def execute(self, mem: Mem, cycle):
+		if not isinstance(cycle, CPU6519.Cycle): cycle = CPU6519.Cycle(cycle)
+		while cycle > 0:
+			inst = self.fetch_byte(mem, cycle)
+
+
+
+
+
+
+
+
+
+
+
+
+
