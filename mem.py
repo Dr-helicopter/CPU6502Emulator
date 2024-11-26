@@ -14,9 +14,10 @@ class Mem:
         if not item in self._data: self._data[item] = Byte(0)
         return  self._data[item]
 
-    def __setitem__(self, key, value : Byte) -> None:
+    def __setitem__(self, key, value) -> None:
         if not isinstance(key, (int, Byte, Register)): raise ValueError('noo')
-        if key >= Mem.max_mem: raise IndexError('no')
+        if not isinstance(value, Byte): value = Byte(value)
         key = int(key)
+        if key >= Mem.max_mem: raise IndexError('no')
         self._data[key] = value
 

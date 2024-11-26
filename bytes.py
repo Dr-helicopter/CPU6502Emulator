@@ -44,7 +44,7 @@ _hex_to_int = {_int_to_hex[i] : i for i in _int_to_hex}
 
 
 class Byte:
-    max_val = 256
+    max_val = 0xff
     def __init__(self, value):
         self._value: int
         if type(value) is str:
@@ -53,7 +53,7 @@ class Byte:
             if value in _hex_to_tuple:
                 self._value = _hex_to_int[value]
         elif type(value) is int:
-            value %= self.max_val
+            value %= self.max_val+1
             self._value = value
 
 
@@ -63,10 +63,21 @@ class Byte:
     #assignment --- end ---
 
     # booleans ---start---
-    def __lt__(self, other) -> bool: return self._value < other
-    def __gt__(self, other) -> bool: return self._value > other
-    def __le__(self, other) -> bool: return self._value <= other
-    def __ge__(self, other) -> bool: return self._value >= other
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, bool): other = Byte(other)
+        return self._value == other._value
+    def __lt__(self, other) -> bool:
+        if not isinstance(other, bool): other = Byte(other)
+        return self._value < other._value
+    def __gt__(self, other) -> bool:
+        if not isinstance(other, bool): other = Byte(other)
+        return self._value > other._value
+    def __le__(self, other) -> bool:
+        if not isinstance(other, bool): other = Byte(other)
+        return self._value <= other._value
+    def __ge__(self, other) -> bool:
+        if not isinstance(other, bool): other = Byte(other)
+        return self._value >= other._value
     # booleans ---end---
 
     # castings ---start---
@@ -100,5 +111,5 @@ class Byte:
     def __getitem__(self, item) -> int:
         if type(item) != int: raise ArgumentTypeError("byte can only take int types")
         if not (0 <= item < 8): raise ValueError("byte can only take integers between 0 and 7")
-        return _int_to_tuple[self._value][-item]
+        return _int_to_tuple[self._value][item]
 

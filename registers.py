@@ -45,7 +45,8 @@ class Register:
 
 
     # casting --- start ---
-    def __int__(self): return int(self._Lbyte) * Byte.max_val + int(self._Rbyte)
+    def __int__(self) -> int:
+        return int(self._Lbyte) * 0x100 + int(self._Rbyte)
 
     def __str__(self) -> str:
         return str(self._Lbyte) + " " + str(self._Rbyte)

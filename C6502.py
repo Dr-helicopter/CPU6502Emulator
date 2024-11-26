@@ -2,17 +2,18 @@ from bytes import Byte
 from registers import Register
 from mem import Mem
 
+class Cycle:
+	def __init__(self, value : int): self.value = value
+	def inc(self): self.value += 1
+	def dec(self): self.value -= 1
+	def __eq__(self, other): return self.value == other
+	def __lt__(self, other): return self.value < other
+	def __gt__(self, other): return self.value > other
+	def __le__(self, other): return self.value <= other
+	def __ge__(self, other): return self.value >= other
+	def __repr__(self): return str(self.value)
+
 class CPU6519:
-	class Cycle:
-		def __init__(self, value : int): self.value = value
-		def inc(self): self.value += 1
-		def dec(self): self.value -= 1
-		def __eq__(self, other): return self.value == other
-		def __lt__(self, other): return self.value < other
-		def __gt__(self, other): return self.value > other
-		def __le__(self, other): return self.value <= other
-		def __ge__(self, other): return self.value >= other
-		def __repr__(self): return str(self.value)
 
 
 	def __init__(self):
@@ -61,12 +62,16 @@ class CPU6519:
 
 
 	def execute(self, mem: Mem, cycle):
-		if not isinstance(cycle, CPU6519.Cycle): cycle = CPU6519.Cycle(cycle)
+		if not isinstance(cycle, Cycle): cycle = Cycle(cycle)
 		while cycle > 0:
 			inst = self.fetch_byte(mem, cycle)
-
-
-
+			match inst:
+				# LDA VVV
+				case 0xA9: # immediate
+					self.A = self.fetch_byte(mem, cycle)
+					self.Z = self.A == 0
+					self.N = self.A[7] == 1
+				case _: print('nothing to do')
 
 
 
