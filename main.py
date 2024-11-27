@@ -1,11 +1,13 @@
 from C6502 import CPU6519
 from mem import Mem
-from bytes import Byte
+import asm6502 as INS
 
 cpu = CPU6519()
 cpu.reset()
 mem = Mem()
-mem[0xfffc] = 0xA9
+mem[0xfffc] = INS.LDA_ZP
 mem[0xfffd] = 0x42
-cpu.execute(mem, 2)
-print(cpu.A)
+mem[0x42] = 0x23
+cpu.execute(mem, 1)
+
+print(hex(int(cpu.A)))

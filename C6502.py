@@ -1,6 +1,8 @@
+import asm6502 as INS
 from bytes import Byte
 from registers import Register
 from mem import Mem
+
 
 class Cycle:
 	def __init__(self, value : int): self.value = value
@@ -14,8 +16,6 @@ class Cycle:
 	def __repr__(self): return str(self.value)
 
 class CPU6519:
-
-
 	def __init__(self):
 		self.PC : Register = Register('fffc')
 		self.SP : Register = Register('0100')
@@ -52,7 +52,7 @@ class CPU6519:
 
 
 
-	def fetch_byte(self, mem: Mem, cycle : Cycle) -> Byte:
+	def fetch_byte(self, mem : Mem, cycle : Cycle) -> Byte:
 		data : Byte = mem[self.PC]
 		self.PC += 1
 		cycle.dec()
@@ -61,24 +61,38 @@ class CPU6519:
 
 
 
+	# set statuses --- start ---
+	def lda_set_status(self):
+		self.Z = self.A == 0
+		self.N = self.A[7] == 1
+	# set statuses --- end ---
+
+
 	def execute(self, mem: Mem, cycle):
 		if not isinstance(cycle, Cycle): cycle = Cycle(cycle)
 		while cycle > 0:
 			inst = self.fetch_byte(mem, cycle)
+
 			match inst:
 				# LDA VVV
-				case 0xA9: # immediate
+				case INS.LDA_IM: # immediate
 					self.A = self.fetch_byte(mem, cycle)
-					self.Z = self.A == 0
-					self.N = self.A[7] == 1
+					self.lda_set_status()
+				case INS.LDA_ZP:
+					zero_page_address = self.fetch_byte(mem, cycle)
+					self.A = read_byte(mem, zero_page_address, cycle)
+					self.lda_set_status()
+				case INS.LDA_ZPX:
+					zero_page_address = self.fetch_byte(mem, cycle)
+					cycle.dec()
+					self.A = read_byte(mem, Byte(zero_page_address + self.X), cycle)
+					self.lda_set_status()
+
 				case _: print('nothing to do')
 
 
 
-
-
-
-
-
-
-
+def read_byte(mem : Mem, address : Byte, cycle : Cycle):
+	data: Byte = mem[address]
+	cycle.dec()
+	return data

@@ -4,13 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c70cb9b4-a6d0-4567-a960-5f10c3763fcb" name="Changes" comment="lots of structural improvements">
-      <change afterPath="$PROJECT_DIR$/mem.py" afterDir="false" />
+    <list default="true" id="c70cb9b4-a6d0-4567-a960-5f10c3763fcb" name="Changes" comment="immediate LDA and requirements added">
+      <change afterPath="$PROJECT_DIR$/asm6502.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/C6502.py" beforeDir="false" afterPath="$PROJECT_DIR$/C6502.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bytes.py" beforeDir="false" afterPath="$PROJECT_DIR$/bytes.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/registers.py" beforeDir="false" afterPath="$PROJECT_DIR$/registers.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,23 +49,25 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.6502.executor": "Run",
-    "Python.bytes.executor": "Run",
-    "Python.main.executor": "Run",
-    "Python.mem.executor": "Run",
-    "Python.registers.executor": "Run",
-    "Python.types.executor": "Run",
-    "Python.قورمه سبزی.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "master",
-    "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "D:/python projects/CPU6502Emulator",
-    "settings.editor.selected.configurable": "preferences.pluginManager"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;Python.6502.executor&quot;: &quot;Run&quot;,
+    &quot;Python.asm6502.executor&quot;: &quot;Run&quot;,
+    &quot;Python.bytes.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.mem.executor&quot;: &quot;Run&quot;,
+    &quot;Python.registers.executor&quot;: &quot;Run&quot;,
+    &quot;Python.types.executor&quot;: &quot;Run&quot;,
+    &quot;Python.قورمه سبزی.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/python projects/CPU6502Emulator&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;advanced.settings&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="pythonProject" />
@@ -157,7 +157,31 @@
       <option name="project" value="LOCAL" />
       <updated>1731179827511</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="memory and necessary methods added">
+      <option name="closed" value="true" />
+      <created>1732546401239</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1732546401239</updated>
+    </task>
+    <task id="LOCAL-00008" summary="immediate LDA and requirements added">
+      <option name="closed" value="true" />
+      <created>1732614002745</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1732614002746</updated>
+    </task>
+    <task id="LOCAL-00009" summary="immediate LDA and requirements added">
+      <option name="closed" value="true" />
+      <created>1732615299307</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1732615299307</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -175,6 +199,15 @@
     <MESSAGE value="implemented make_int_from_tuple and bug fixes" />
     <MESSAGE value="implemented make int from tuple and bug fixes" />
     <MESSAGE value="lots of structural improvements" />
-    <option name="LAST_COMMIT_MESSAGE" value="lots of structural improvements" />
+    <MESSAGE value="memory and necessary methods added" />
+    <MESSAGE value="immediate LDA and requirements added" />
+    <option name="LAST_COMMIT_MESSAGE" value="immediate LDA and requirements added" />
+  </component>
+  <component name="XDebuggerManager">
+    <watches-manager>
+      <configuration name="PythonConfigurationType">
+        <watch expression="mem._data[65533]" />
+      </configuration>
+    </watches-manager>
   </component>
 </project>
