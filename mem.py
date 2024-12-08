@@ -1,4 +1,4 @@
-from bytes import Byte
+from bytes import Byte , Cycle
 from registers import Register
 
 class Mem:
@@ -21,3 +21,11 @@ class Mem:
         if key >= Mem.max_mem: raise IndexError('no')
         self._data[key] = value
 
+    def write_word(self, address, value, cycle : Cycle) -> None:
+        if not isinstance(address, (int, Byte, Register)): raise ValueError('noo')
+        if not isinstance(value, Register): value = Register(value)
+        address = int(address)
+        if address >= Mem.max_mem: raise IndexError('no')
+        self._data[address] = value.get_l_byte()
+        self._data[address+1] = value.get_r_byte()
+        cycle -= 2

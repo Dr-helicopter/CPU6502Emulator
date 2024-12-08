@@ -1,19 +1,10 @@
 import asm6502 as INS
-from bytes import Byte
+from bytes import Byte , Cycle
 from registers import Register
 from mem import Mem
 
 
-class Cycle:
-	def __init__(self, value : int): self.value = value
-	def inc(self): self.value += 1
-	def dec(self): self.value -= 1
-	def __eq__(self, other): return self.value == other
-	def __lt__(self, other): return self.value < other
-	def __gt__(self, other): return self.value > other
-	def __le__(self, other): return self.value <= other
-	def __ge__(self, other): return self.value >= other
-	def __repr__(self): return str(self.value)
+
 
 class CPU6519:
 	def __init__(self):
@@ -58,8 +49,14 @@ class CPU6519:
 		cycle.dec()
 		return data
 
-
-
+	def fetch_reg(self, mem : Mem, cycle : Cycle) -> Register:
+		r : Byte = mem[self.PC]
+		self.PC += 1
+		cycle.dec()
+		l : Byte = mem[self.PC]
+		self.PC += 1
+		cycle.dec()
+		return Register((l, r))
 
 	# set statuses --- start ---
 	def lda_set_status(self):
@@ -74,6 +71,15 @@ class CPU6519:
 			inst = self.fetch_byte(mem, cycle)
 
 			match inst:
+
+				case INS.JSR:
+					sub_add = self.fetch_reg(mem, cycle)
+					mem.write_word(self.SP, self.PC - 1, cycle)
+					self.SP += 1
+					cycle.dec()
+					self.PC = sub_add
+					cycle.dec()
+
 				# LDA VVV
 				case INS.LDA_IM: # immediate
 					self.A = self.fetch_byte(mem, cycle)

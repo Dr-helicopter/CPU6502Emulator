@@ -23,11 +23,20 @@ class Register:
                 if isinstance(value[0], int) and isinstance(value[1], int):
                     self._Rbyte = Byte(value[1])
                     self._Lbyte = Byte(value[0])
+                elif isinstance(value[0], Byte) and isinstance(value[1], Byte):
+                    self._Rbyte = value[1]
+                    self._Lbyte = value[0]
         else: raise ValueError
 
     def __getitem__(self, item : int):
         if item >= 8: return self._Rbyte[item]
         elif 8 > item >= 0: return self._Lbyte[item]
+
+     # get byte methods --- start ---
+    def get_l_byte(self) -> Byte: return self._Lbyte
+    def get_r_byte(self) -> Byte: return self._Rbyte
+     # get byte methods --- end ---
+
 
 
     # arithmetic operators --- start ---
@@ -40,6 +49,11 @@ class Register:
         if not isinstance(other, Register): other = Register(other)
         r = int(self._Rbyte) + int(other._Rbyte)
         l = int(self._Lbyte) + int(other._Lbyte) + 1 if r > Byte.max_val else 0
+        return Register((l, r))
+    def __sub__(self, other):
+        if not isinstance(other, Register): other = Register(other)
+        r = int(self._Rbyte) - int(other._Rbyte)
+        l = int(self._Lbyte) - int(other._Lbyte) - (1 if r<0 else 0)
         return Register((l, r))
     # arithmetic operators --- end ---
 

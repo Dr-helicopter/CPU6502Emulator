@@ -1,5 +1,17 @@
 from argparse import ArgumentTypeError
 
+class Cycle:
+	def __init__(self, value : int): self.value = value
+	def inc(self) -> None: self.value += 1
+	def dec(self) -> None: self.value -= 1
+	def __eq__(self, other) -> bool: return self.value == other
+	def __lt__(self, other) -> bool: return self.value < other
+	def __gt__(self, other) -> bool: return self.value > other
+	def __le__(self, other) -> bool: return self.value <= other
+	def __ge__(self, other) -> bool: return self.value >= other
+	def __sub__(self, other : int): self.value -= other
+	def __repr__(self) -> str: return str(self.value)
+	def __int__(self) -> int: return self.value
 
 
 
@@ -62,6 +74,8 @@ class Byte:
     def __isub__(self, other): return self - other
     #assignment --- end ---
 
+
+
     # booleans ---start---
     def __eq__(self, other) -> bool:
         if not isinstance(other, bool): other = Byte(other)
@@ -80,8 +94,10 @@ class Byte:
         return self._value >= other._value
     # booleans ---end---
 
+
+
     # castings ---start---
-    def __int__(self): return self._value
+    def __int__(self) -> int: return self._value
     def __str__(self) -> str:
         a = ''
         for i in _int_to_tuple[self._value]: a = str(i) + a
@@ -89,7 +105,6 @@ class Byte:
     def __hex__(self) -> str:
         return _int_to_hex[self._value]
     # casting ---end---
-
 
 
 
@@ -107,6 +122,15 @@ class Byte:
         if not isinstance(other, Byte): other = Byte(other)
         return Byte(self._value - other._value)
     # arithmetic operators --- end ---
+
+
+
+    # bitwise operators --- start ---
+    def __lshift__(self, other : int): return Byte(self._value * 2** other)
+    def __rshift__(self, other : int): return Byte(self._value // 2** other)
+    # bitwise operators --- end ---
+
+
 
     def __getitem__(self, item) -> int:
         if type(item) != int: raise ArgumentTypeError("byte can only take int types")
