@@ -1,5 +1,4 @@
-from C6502 import CPU6519
-from mem import Mem
+from C6502 import CPU6519, Mem
 import asm6502 as INS
 
 cpu = CPU6519()
