@@ -12,4 +12,4 @@ mem[0x4243] = 0x02
 
 cpu.execute(mem, 9)
 
-print(hex(int(cpu.A)))
+print(hex(int(cpu._A)))

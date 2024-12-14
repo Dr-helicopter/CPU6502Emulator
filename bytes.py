@@ -56,7 +56,7 @@ class Byte:
 		elif type(value) is int:
 			value %= self.max_val+1
 			self._value = value
-
+		elif isinstance(value, Byte): self._value = value._value
 
 	#assignment --- start ---
 	def __iadd__(self, other): return self + other
@@ -183,6 +183,7 @@ class Register:
 	# arithmetic operators --- end ---
 
 
+
 	# casting --- start ---
 	def __int__(self) -> int:
 		return int(self._Lbyte) * 0x100 + int(self._Rbyte)
@@ -190,6 +191,9 @@ class Register:
 	def __str__(self) -> str:
 		return str(self._Lbyte) + " " + str(self._Rbyte)
 	# casting ---end ---
+
+
+
 
 class Cycle:
 	def __init__(self, value : int): self.value = value

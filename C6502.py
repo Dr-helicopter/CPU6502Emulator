@@ -3,10 +3,13 @@ from bytes import Byte, Cycle, Register
 
 
 class Mem:
+	max_mem = 1028 * 64
+
 	def __init__(self):
 		self._data = {}
 
-	max_mem = 1028 * 64
+	def reset(self):
+		self._data = {}
 
 	def __getitem__(self, item) -> Byte:
 		if not isinstance(item, (int, Byte, Register)): raise ValueError('noo')
@@ -33,12 +36,12 @@ class Mem:
 
 
 class CPU6519:
-	def __init__(self):
+	def __init__(self) -> None:
 		self.PC : Register = Register('fffc')
 		self.SP : Register = Register('0100')
 
-		self.A : Byte = Byte(0)
-		self.X : Byte = Byte(0)
+		self._A : Byte = Byte(0)
+		self._X : Byte = Byte(0)
 		self.Y : Byte = Byte(0)
 
 		#flags VVV
@@ -50,13 +53,34 @@ class CPU6519:
 		self.V : bool = False
 		self.N : bool = False
 
+		self.empty_cycles : int = 0
+		self.over_cycles : int = 0
 
-	def reset(self):
+	# properties --- start ---
+	@property
+	def A(self) -> int: return int(self._A)
+	@A.setter
+	def A(self , other) -> None:
+		if not isinstance(other, Byte): other = Byte(other)
+		self._A = other
+
+	@property
+	def X(self) -> int: return int(self._X)
+	@X.setter
+	def X(self , other) -> None:
+		if not isinstance(other, Byte): other = Byte(other)
+		self._X = other
+	# properties --- end ---
+
+
+
+
+	def reset(self) -> None:
 		self.PC = Register('fffc')
 		self.SP = Register('0100')
 
-		self.A = Byte(0)
-		self.X = Byte(0)
+		self._A = Byte(0)
+		self._X = Byte(0)
 		self.Y = Byte(0)
 
 		self.C = False
@@ -67,7 +91,8 @@ class CPU6519:
 		self.V = False
 		self.N = False
 
-
+		self.empty_cycles: int = 0
+		self.over_cycles: int = 0
 
 	def fetch_byte(self, mem : Mem, cycle : Cycle) -> Byte:
 		data : Byte = mem[self.PC]
@@ -85,9 +110,11 @@ class CPU6519:
 		return Register((l, r))
 
 	# set statuses --- start ---
+	def adc_set_status(self):
+		pass
 	def lda_set_status(self):
-		self.Z = self.A == 0
-		self.N = self.A[7] == 1
+		self.Z = self._A == 0
+		self.N = self._A[7] == 1
 	# set statuses --- end ---
 
 
@@ -97,7 +124,9 @@ class CPU6519:
 			inst = self.fetch_byte(mem, cycle)
 
 			match inst:
-
+				# ADC
+				case INS.ADC_I:
+					pass
 				case INS.JSR:
 					sub_add = self.fetch_reg(mem, cycle)
 					mem.write_word(self.SP, self.PC - 1, cycle)
@@ -108,21 +137,22 @@ class CPU6519:
 
 				# LDA VVV
 				case INS.LDA_IM: # immediate
-					self.A = self.fetch_byte(mem, cycle)
+					self._A = self.fetch_byte(mem, cycle)
 					self.lda_set_status()
 				case INS.LDA_ZP:
 					zero_page_address = self.fetch_byte(mem, cycle)
-					self.A = read_byte(mem, zero_page_address, cycle)
+					self._A = read_byte(mem, zero_page_address, cycle)
 					self.lda_set_status()
 				case INS.LDA_ZPX:
 					zero_page_address = self.fetch_byte(mem, cycle)
 					cycle.dec()
-					self.A = read_byte(mem, Byte(zero_page_address + self.X), cycle)
+					self._A = read_byte(mem, Byte(zero_page_address + self._X), cycle)
 					self.lda_set_status()
 
-				case _: print('nothing to do')
-
-
+				case _:
+					print('nothing to do')
+					self.empty_cycles += 1
+		self.over_cycles -= cycle.value
 
 def read_byte(mem : Mem, address : Byte, cycle : Cycle):
 	data: Byte = mem[address]
