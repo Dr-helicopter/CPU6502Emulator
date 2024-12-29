@@ -15,8 +15,8 @@ class Mem:
 		if not isinstance(item, (int, Byte, Register)): raise ValueError('noo')
 		item = int(item)
 		if item >= Mem.max_mem: raise IndexError('no')
-		if not item in self._data: self._data[item] = Byte(0)
-		return  self._data[item]
+		if item not in self._data: self._data[item] = Byte(0)
+		return self._data[item]
 
 	def __setitem__(self, key, value) -> None:
 		if not isinstance(key, (int, Byte, Register)): raise ValueError('noo')
@@ -25,55 +25,54 @@ class Mem:
 		if key >= Mem.max_mem: raise IndexError('no')
 		self._data[key] = value
 
-	def write_word(self, address, value, cycle : Cycle) -> None:
+	def write_word(self, address, value, cycle: Cycle) -> None:
 		if not isinstance(address, (int, Byte, Register)): raise ValueError('noo')
 		if not isinstance(value, Register): value = Register(value)
 		address = int(address)
 		if address >= Mem.max_mem: raise IndexError('no')
 		self._data[address] = value.get_l_byte()
-		self._data[address+1] = value.get_r_byte()
+		self._data[address + 1] = value.get_r_byte()
 		cycle -= 2
 
 
 class CPU6519:
 	def __init__(self) -> None:
-		self.PC : Register = Register('fffc')
-		self.SP : Register = Register('0100')
+		self.PC: Register = Register('fffc')
+		self.SP: Register = Register('0100')
 
-		self._A : Byte = Byte(0)
-		self._X : Byte = Byte(0)
-		self.Y : Byte = Byte(0)
+		self._A: Byte = Byte(0)
+		self._X: Byte = Byte(0)
+		self.Y: Byte = Byte(0)
 
-		#flags VVV
-		self.C : bool = False
-		self.Z : bool = False
-		self.I : bool = False
-		self.D : bool = False
-		self.B : bool = False
-		self.V : bool = False
-		self.N : bool = False
+		# flags VVV
+		self.C: bool = False
+		self.Z: bool = False
+		self.I: bool = False
+		self.D: bool = False
+		self.B: bool = False
+		self.V: bool = False
+		self.N: bool = False
 
-		self.empty_cycles : int = 0
-		self.over_cycles : int = 0
+		self.empty_cycles: int = 0
+		self.over_cycles: int = 0
 
 	# properties --- start ---
 	@property
 	def A(self) -> int: return int(self._A)
+
 	@A.setter
-	def A(self , other) -> None:
+	def A(self, other) -> None:
 		if not isinstance(other, Byte): other = Byte(other)
 		self._A = other
 
 	@property
 	def X(self) -> int: return int(self._X)
+
 	@X.setter
-	def X(self , other) -> None:
+	def X(self, other) -> None:
 		if not isinstance(other, Byte): other = Byte(other)
 		self._X = other
 	# properties --- end ---
-
-
-
 
 	def reset(self) -> None:
 		self.PC = Register('fffc')
@@ -94,29 +93,29 @@ class CPU6519:
 		self.empty_cycles: int = 0
 		self.over_cycles: int = 0
 
-	def fetch_byte(self, mem : Mem, cycle : Cycle) -> Byte:
-		data : Byte = mem[self.PC]
+	def fetch_byte(self, mem: Mem, cycle: Cycle) -> Byte:
+		data: Byte = mem[self.PC]
 		self.PC += 1
 		cycle.dec()
 		return data
 
-	def fetch_reg(self, mem : Mem, cycle : Cycle) -> Register:
-		r : Byte = mem[self.PC]
+	def fetch_reg(self, mem: Mem, cycle: Cycle) -> Register:
+		right: Byte = mem[self.PC]
 		self.PC += 1
 		cycle.dec()
-		l : Byte = mem[self.PC]
+		left: Byte = mem[self.PC]
 		self.PC += 1
 		cycle.dec()
-		return Register((l, r))
+		return Register((left, right))
 
 	# set statuses --- start ---
 	def adc_set_status(self):
 		pass
+
 	def lda_set_status(self):
 		self.Z = self._A == 0
 		self.N = self._A[7] == 1
 	# set statuses --- end ---
-
 
 	def execute(self, mem: Mem, cycle):
 		if not isinstance(cycle, Cycle): cycle = Cycle(cycle)
@@ -136,7 +135,7 @@ class CPU6519:
 					cycle.dec()
 
 				# LDA VVV
-				case INS.LDA_IM: # immediate
+				case INS.LDA_IM:  # immediate
 					self._A = self.fetch_byte(mem, cycle)
 					self.lda_set_status()
 				case INS.LDA_ZP:
@@ -154,7 +153,8 @@ class CPU6519:
 					self.empty_cycles += 1
 		self.over_cycles -= cycle.value
 
-def read_byte(mem : Mem, address : Byte, cycle : Cycle):
+
+def read_byte(mem: Mem, address: Byte, cycle: Cycle):
 	data: Byte = mem[address]
 	cycle.dec()
 	return data
